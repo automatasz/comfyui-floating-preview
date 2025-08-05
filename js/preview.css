@@ -1,0 +1,29 @@
+
+.preview_floater {
+    z-index : 9000;
+    border: thin solid gray;
+    color:white;
+    position: absolute;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(64, 64, 33, 0.8);
+}
+
+.preview_floater_header {
+    width: 100%;
+    text-align: center;
+    background-color: rgba(64, 64, 33, 0.8);
+    background-size: 100% 14px;
+    background-image: repeating-linear-gradient(
+        0deg, #0c270e, black 1px, rgba(64, 64, 33, 0.8) 1px, rgba(64, 64, 33, 0.8) 2px
+    );
+    padding-top: 4px;
+}
+
+.preview_floater_body {
+    padding: 1px;
+}
+
+
