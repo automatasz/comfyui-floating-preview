@@ -3,34 +3,41 @@ import { api } from "../../scripts/api.js"
 import { FloatingWindow } from "./floating_window.js";
 import { create } from "./utils.js";
 
-const floater  = new FloatingWindow("Preview", (x,y) => { app.graph.extra.cg_preview_position = [x,y]})
-var running_and_have_image = false
+var _floater      = null
+var image_to_show = false
+var node_name     = null
+var running_node  = null
 
-function set_visibility() {
+function floater() {
+    if (!_floater) {
+        _floater = new FloatingWindow("Preview", (x,y) => { app.graph.extra.cg_preview_position = [x,y]})
+        create('img', null, _floater.body, {id: 'cg-preview-image'})
+    }
+    return _floater
+}
+
+function update() {
+    floater().set_title(node_name ? `${node_name} (#${running_node})` : `Node #${running_node}`);
     const option = app.ui.settings.getSettingValue("Preview.show");
-    if (option==2 || (running_and_have_image && option==1)) floater.show();
-    else floater.hide();
+    (option==2 || (image_to_show && option==1)) ? floater().show() : floater().hide();
 }
 
 function on_executing(e) {
-    const running_node = e.detail
-    if (running_node) {
-        const node_name = app.graph?._nodes_by_id[running_node]?.getTitle()
-        floater.set_title(node_name ? `${node_name} (#${running_node})` : `Node #${running_node}`);
-    } else { 
-        running_and_have_image = false;
+    running_node = e.detail
+    if (!running_node) {
+        image_to_show = false;
+    } else {
+        node_name = app.graph?._nodes_by_id[running_node]?.getTitle();
     }
-
-    set_visibility();
+    update();
 }
 
 function on_b_preview(e) { 
+    if (!node_name && running_node) node_name = app.graph?._nodes_by_id[running_node]?.getTitle()
     document.getElementById('cg-preview-image').src = window.URL.createObjectURL(e.detail) 
-    running_and_have_image = true;
-    set_visibility();
+    image_to_show = true;
+    update();
 }
-
-function on_image_loaded() {}
 
 app.registerExtension({
 	name: "cg.preview",
@@ -48,10 +55,8 @@ app.registerExtension({
             {'rel':'stylesheet', 'type':'text/css', 'href': new URL("./preview.css", import.meta.url).href } )
         api.addEventListener('executing', on_executing)
         api.addEventListener('b_preview', on_b_preview)
-        create('img', null, floater.body, {id: 'cg-preview-image'}).onload = on_image_loaded
-        floater.move_to( app.graph?.extra?.cg_preview_position?.[0] || 100, app.graph?.extra?.cg_preview_position?.[1] || 200 )
-        if (app.ui.settings.getSettingValue("Preview.show") == 2) floater.show();
-        else floater.hide();
+        floater().move_to( app.graph?.extra?.cg_preview_position?.[0] || 100, app.graph?.extra?.cg_preview_position?.[1] || 200 )
+        (app.ui.settings.getSettingValue("Preview.show") == 2) ? floater().show() : floater().hide();
     }
 })
     
