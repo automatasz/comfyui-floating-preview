@@ -13,11 +13,13 @@ export class FloatingWindow extends HTMLDivElement {
         this.append(this.body)
 
         this.header.addEventListener('mousedown',this.header_mousedown.bind(this))
+        this.header.addEventListener('click',this.header_click.bind(this))
         document.addEventListener('mouseup',this.header_mouseup.bind(this))
         document.addEventListener('mousemove',this.header_mousemove.bind(this))
         document.addEventListener('mouseleave',this.header_mouseup.bind(this))
         
         this.dragging = false
+        this.shaded   = false
         
         document.body.append(this)
     }
@@ -37,6 +39,16 @@ export class FloatingWindow extends HTMLDivElement {
         e.stopPropagation()
         e.preventDefault()
     }
+
+    header_click(e) {
+        if (e.detail>1) {
+            this.shaded = !this.shaded
+            const w = this.header.getBoundingClientRect().width
+            this.body.style.display = this.shaded ? 'none' : 'block'
+            this.header.style.width = (this.shaded) ? `${w}px` : undefined
+        }
+    }
+        
 
     header_mousedown(e) {
         this.dragging = true

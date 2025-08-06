@@ -13,8 +13,14 @@ function set_visibility() {
 }
 
 function on_executing(e) {
-    const running_node = (e.detail)
-    if (!running_node) running_and_have_image = false; 
+    const running_node = e.detail
+    if (running_node) {
+        const node_name = app.graph?._nodes_by_id[running_node]?.getTitle()
+        floater.set_title(node_name ? `${node_name} (#${running_node})` : `Node #${running_node}`);
+    } else { 
+        running_and_have_image = false;
+    }
+
     set_visibility();
 }
 
