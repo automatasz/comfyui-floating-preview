@@ -11,7 +11,9 @@ var running_node  = null
 function floater() {
     if (!_floater) {
         _floater = new FloatingWindow("Preview", (x,y) => { app.graph.extra.cg_preview_position = [x,y]})
+        _floater.move_to( app.graph?.extra?.cg_preview_position?.[0] || 100, app.graph?.extra?.cg_preview_position?.[1] || 200 )
         create('img', null, _floater.body, {id: 'cg-preview-image'})
+        update()
     }
     return _floater
 }
@@ -55,8 +57,6 @@ app.registerExtension({
             {'rel':'stylesheet', 'type':'text/css', 'href': new URL("./preview.css", import.meta.url).href } )
         api.addEventListener('executing', on_executing)
         api.addEventListener('b_preview', on_b_preview)
-        floater().move_to( app.graph?.extra?.cg_preview_position?.[0] || 100, app.graph?.extra?.cg_preview_position?.[1] || 200 )
-        (app.ui.settings.getSettingValue("Preview.show") == 2) ? floater().show() : floater().hide();
     }
 })
     
