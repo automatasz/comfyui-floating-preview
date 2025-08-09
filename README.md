@@ -19,4 +19,9 @@ By default the window will pop up when the first preview is generated. The title
 
 Note that the window will show previews from any tab - so you can use this to watch the progress of one workflow while you work on another.
 
-That's it.
+## Settings
+
+In the Comfy settings are the following options
+
+- `remove` can be used to remove the previews from the nodes generating them
+- `show` determines when the preview window is shown (never, when active, or always)
