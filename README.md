@@ -17,6 +17,8 @@ and restart Comfy
 
 By default the window will pop up when the first preview is generated. The title bar will show which node the preview is being sent to. You can drag the window around using the header, and you can toggle-minimise it by double-clicking the header (a hat tip to WindowShade, my favourite extension from the days of MacOS8).
 
+The preview window is **resizable** - drag any of the corner handles to resize while maintaining the image's aspect ratio.
+
 Note that the window will show previews from any tab - so you can use this to watch the progress of one workflow while you work on another.
 
 ## Settings
