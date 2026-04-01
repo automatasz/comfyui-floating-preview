@@ -54,6 +54,20 @@ export class FloatingWindow extends HTMLDivElement {
         this.header.innerText = title
     }
 
+    fit_to_image() {
+        if (!this.img_elem || !this.img_elem.naturalWidth || !this.img_elem.naturalHeight) return
+
+        const imgWidth = this.img_elem.naturalWidth
+        const imgHeight = this.img_elem.naturalHeight
+        const imgAspect = imgHeight / imgWidth
+
+        // Get current width and calculate height based on image aspect ratio
+        const currentWidth = this.offsetWidth
+        const newHeight = currentWidth * imgAspect
+
+        this.style.height = `${newHeight}px`
+    }
+
     move_to(x,y) {
         this.position = {x:x,y:y}
         this.style.left = `${this.position.x}px`
