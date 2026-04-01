@@ -4,7 +4,6 @@ import { FloatingWindow } from "./floating_window.js";
 import { create } from "./utils.js";
 
 var _floater          = null
-var preview_node_name = null
 
 function remove_node_previews(nid) {
     const previews = app.nodePreviewImages[nid]
@@ -16,7 +15,7 @@ function remove_node_previews(nid) {
 
 function floater() {
     if (!_floater) {
-        _floater = new FloatingWindow("Preview", (x,y) => { app.graph.extra.cg_preview_position = [x,y]})
+        _floater = new FloatingWindow((x,y) => { app.graph.extra.cg_preview_position = [x,y]})
         _floater.move_to( app.graph?.extra?.cg_preview_position?.[0] || 100, app.graph?.extra?.cg_preview_position?.[1] || 200 )
         _floater.img_elem = create('img', null, _floater.body, {id: 'cg-preview-image'})
         _floater.img_elem.addEventListener('load', () => {
@@ -27,26 +26,22 @@ function floater() {
 }
 
 function _update() {
-    floater().set_title(preview_node_name || 'inactive');
     const option = app.ui.settings.getSettingValue("Preview.show");
-    (option==2 || (preview_node_name && option==1)) ? floater().show() : floater().hide();
+    (option==2 || option==1) ? floater().show() : floater().hide();
 }
 
 function on_executed(e) {
-    preview_node_name = null
-    _update();   
+    _update();
 }
 
-function on_b_preview(e) {   
-    floater().img_elem.src = window.URL.createObjectURL(e.detail.blob) 
+function on_b_preview(e) {
+    floater().img_elem.src = window.URL.createObjectURL(e.detail.blob)
     const nid = e.detail.nodeId
     let a = app.nodePreviewImages[nid]
     const node = app.graph?.getNodeById(nid)
-    if (node) { 
-        const node_name = node.getTitle()
-        preview_node_name = node_name ? `${node_name} (#${nid})` : `Node #${nid}`
+    if (node) {
         if (app.ui.settings.getSettingValue("Preview.remove")) remove_node_previews(nid)
-    }  
+    }
     _update();
 }
 

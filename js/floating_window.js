@@ -7,13 +7,13 @@ function create( tag, clss, parent, properties ) {
 }
 
 export class FloatingWindow extends HTMLDivElement {
-    constructor(title, movecallback) {
+    constructor(movecallback) {
         super()
         this.movecallback = movecallback
         this.classList.add('preview_floater')
         this.style.width = '400px'
         this.style.height = '300px'
-        this.header = create('div', 'preview_floater_header', this, {innerText:title} )
+        this.header = create('div', 'preview_floater_header', this)
         this.body   = create('div', 'preview_floater_body', this )
 
         // Create resize handles
@@ -48,10 +48,6 @@ export class FloatingWindow extends HTMLDivElement {
 
     hide() {
         this.style.display = 'none'
-    }
-
-    set_title(title) {
-        this.header.innerText = title
     }
 
     fit_to_image() {
