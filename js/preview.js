@@ -4,6 +4,7 @@ import { FloatingWindow } from "./floating_window.js";
 import { create } from "./utils.js";
 
 var _floater          = null
+var preview_node_name = null
 
 function remove_node_previews(nid) {
     const previews = app.nodePreviewImages[nid]
@@ -27,10 +28,12 @@ function floater() {
 
 function _update() {
     const option = app.ui.settings.getSettingValue("Preview.show");
-    (option==2 || option==1) ? floater().show() : floater().hide();
+    const show = (option==2) || (option==1 && preview_node_name);
+    show ? floater().show() : floater().hide();
 }
 
 function on_executed(e) {
+    preview_node_name = null
     _update();
 }
 
@@ -40,6 +43,8 @@ function on_b_preview(e) {
     let a = app.nodePreviewImages[nid]
     const node = app.graph?.getNodeById(nid)
     if (node) {
+        const node_name = node.getTitle()
+        preview_node_name = node_name ? `${node_name} (#${nid})` : `Node #${nid}`
         if (app.ui.settings.getSettingValue("Preview.remove")) remove_node_previews(nid)
     }
     _update();

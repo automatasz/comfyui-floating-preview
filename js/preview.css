@@ -12,13 +12,8 @@
 
 .preview_floater_header {
     width: 100%;
-    text-align: center;
-    background-color: rgba(64, 64, 33, 0.8);
-    background-size: 100% 14px;
-    background-image: repeating-linear-gradient(
-        0deg, #0c270e, black 1px, rgba(64, 64, 33, 0.8) 1px, rgba(64, 64, 33, 0.8) 2px
-    );
-    padding-top: 4px;
+    height: 0px;
+    overflow: hidden;
 }
 
 .preview_floater_body {
