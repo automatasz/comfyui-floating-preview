@@ -22,7 +22,7 @@ export class FloatingWindow extends HTMLDivElement {
         this.resizeHandleSW = create('div', 'resize-handle resize-handle-sw', this)
         this.resizeHandleSE = create('div', 'resize-handle resize-handle-se', this)
 
-        this.header.addEventListener('mousedown',()=>{this.dragging = true})
+        this.body.addEventListener('mousedown',()=>{this.dragging = true})
         this.header.addEventListener('click',this.header_click.bind(this))
         document.addEventListener('mousemove',this.on_mousemove.bind(this))
         document.addEventListener('mouseleave',()=>{this.dragging = false; this.resizing = null})

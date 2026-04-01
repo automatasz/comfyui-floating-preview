@@ -18,7 +18,7 @@ function floater() {
     if (!_floater) {
         _floater = new FloatingWindow((x,y) => { app.graph.extra.cg_preview_position = [x,y]})
         _floater.move_to( app.graph?.extra?.cg_preview_position?.[0] || 100, app.graph?.extra?.cg_preview_position?.[1] || 200 )
-        _floater.img_elem = create('img', null, _floater.body, {id: 'cg-preview-image'})
+        _floater.img_elem = create('img', null, _floater.body, {id: 'cg-preview-image', draggable: false})
         _floater.img_elem.addEventListener('load', () => {
             _floater.fit_to_image()
         })
