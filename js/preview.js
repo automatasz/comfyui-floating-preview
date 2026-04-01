@@ -5,6 +5,7 @@ import { create } from "./utils.js";
 
 var _floater          = null
 var preview_node_name = null
+var previewing_active = false
 
 function remove_node_previews(nid) {
     const previews = app.nodePreviewImages[nid]
@@ -28,25 +29,26 @@ function floater() {
 
 function _update() {
     const option = app.ui.settings.getSettingValue("Preview.show");
-    const show = (option==2) || (option==1 && preview_node_name);
+    const show = option != 0 && previewing_active;
     show ? floater().show() : floater().hide();
 }
 
-function on_executed(e) {
+function on_done(e) {
     preview_node_name = null
+    previewing_active = false
     _update();
 }
 
 function on_b_preview(e) {
     floater().img_elem.src = window.URL.createObjectURL(e.detail.blob)
     const nid = e.detail.nodeId
-    let a = app.nodePreviewImages[nid]
     const node = app.graph?.getNodeById(nid)
     if (node) {
         const node_name = node.getTitle()
         preview_node_name = node_name ? `${node_name} (#${nid})` : `Node #${nid}`
         if (app.ui.settings.getSettingValue("Preview.remove")) remove_node_previews(nid)
     }
+    previewing_active = true
     _update();
 }
 
@@ -70,7 +72,8 @@ app.registerExtension({
     setup() {
         create('link', null, document.getElementsByTagName('HEAD')[0], 
             {'rel':'stylesheet', 'type':'text/css', 'href': new URL("./preview.css", import.meta.url).href } )
-        api.addEventListener('executed', on_executed)
+        api.addEventListener('executed', on_done)
+        api.addEventListener('execution_interrupted', on_done)
         api.addEventListener('b_preview_with_metadata', on_b_preview)
     }
 })
