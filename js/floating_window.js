@@ -11,8 +11,10 @@ export class FloatingWindow extends HTMLDivElement {
         super()
         this.movecallback = movecallback
         this.classList.add('preview_floater')
+        this.style.width = '400px'
+        this.style.height = '300px'
         this.header = create('div', 'preview_floater_header', this, {innerText:title} )
-        this.body   = create('div', 'prewview_floater_body', this )
+        this.body   = create('div', 'preview_floater_body', this )
 
         // Create resize handles
         this.resizeHandleNW = create('div', 'resize-handle resize-handle-nw', this)
@@ -63,7 +65,7 @@ export class FloatingWindow extends HTMLDivElement {
         if (e.detail>1) {
             this.shaded = !this.shaded
             const w = this.header.getBoundingClientRect().width
-            this.body.style.display = this.shaded ? 'none' : 'block'
+            this.body.style.display = this.shaded ? 'none' : 'flex'
             this.header.style.width = (this.shaded) ? `${w}px` : `unset`
 
             // Toggle resize handles visibility
