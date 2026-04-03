@@ -20,7 +20,12 @@ function refreshDisplayNodes(tag) {
   for (const node of findDisplayNodes(tag)) {
     const imgs = _galleryImages.get(tag);
     if (imgs?.length) {
-      node.imgs = imgs.map((entry) => entry.img);
+      const loaded = imgs.map((entry) => entry.img).filter((i) => i.naturalWidth);
+      node.imgs = loaded;
+      node.imageIndex = loaded.length ? loaded.length - 1 : null;
+    } else {
+      node.imgs = [];
+      node.imageIndex = null;
     }
     node.setDirtyCanvas(true, true);
   }
@@ -83,6 +88,7 @@ app.registerExtension({
       for (const n of graph._nodes) {
         if (n.type === "GroupPreviewDisplay") {
           n.imgs = [];
+          n.imageIndex = null;
           n.setDirtyCanvas(true, true);
         }
       }

@@ -1,17 +1,15 @@
 VERSION = "0.3.0"
 
-from .nodes.collector import ProgressiveImageCollector, GroupPreview, GroupPreviewDisplay
+from .nodes.collector import GroupPreview, GroupPreviewDisplay
 
 WEB_DIRECTORY = "./js"
 
 NODE_CLASS_MAPPINGS = {
-    "ProgressiveImageCollector": ProgressiveImageCollector,
     "GroupPreview": GroupPreview,
     "GroupPreviewDisplay": GroupPreviewDisplay,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ProgressiveImageCollector": "Progressive Image Collector",
     "GroupPreview": "Group Preview",
     "GroupPreviewDisplay": "Group Preview Display",
 }
