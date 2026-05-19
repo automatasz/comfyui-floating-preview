@@ -43,7 +43,10 @@ app.registerExtension({
         origCreated?.apply(this, arguments);
 
         const nodeRef = this;
-        api.addEventListener("b_preview_with_metadata", function (event) {
+        if (nodeRef._previewHandler) {
+          api.removeEventListener("b_preview_with_metadata", nodeRef._previewHandler);
+        }
+        nodeRef._previewHandler = function (event) {
           const { blob, nodeId, displayNodeId } = event.detail;
           const targetId = String(displayNodeId || nodeId);
           if (targetId !== String(nodeRef.id)) return;
@@ -58,7 +61,8 @@ app.registerExtension({
             refreshDisplayNodes(tag);
           };
           img.src = URL.createObjectURL(blob);
-        });
+        };
+        api.addEventListener("b_preview_with_metadata", nodeRef._previewHandler);
       };
     }
 
