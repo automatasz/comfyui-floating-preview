@@ -36,36 +36,6 @@ app.registerExtension({
 
   async beforeRegisterNodeDef(nodeType, nodeData) {
 
-    // ── GroupPreview emitter ──
-    if (nodeData?.name === "GroupPreview") {
-      const origCreated = nodeType.prototype.onNodeCreated;
-      nodeType.prototype.onNodeCreated = function () {
-        origCreated?.apply(this, arguments);
-
-        const nodeRef = this;
-        if (nodeRef._previewHandler) {
-          api.removeEventListener("b_preview_with_metadata", nodeRef._previewHandler);
-        }
-        nodeRef._previewHandler = function (event) {
-          const { blob, nodeId, displayNodeId } = event.detail;
-          const targetId = String(displayNodeId || nodeId);
-          if (targetId !== String(nodeRef.id)) return;
-
-          const tag = getTagFromNode(nodeRef);
-          if (!tag) return;
-
-          const img = new Image();
-          img.onload = () => {
-            if (!_galleryImages.has(tag)) _galleryImages.set(tag, []);
-            _galleryImages.get(tag).push({ img, sourceNodeId: nodeRef.id });
-            refreshDisplayNodes(tag);
-          };
-          img.src = URL.createObjectURL(blob);
-        };
-        api.addEventListener("b_preview_with_metadata", nodeRef._previewHandler);
-      };
-    }
-
     // ── GroupPreviewDisplay viewer ──
     if (nodeData?.name === "GroupPreviewDisplay") {
       const origCreated = nodeType.prototype.onNodeCreated;
@@ -96,6 +66,29 @@ app.registerExtension({
           n.setDirtyCanvas(true, true);
         }
       }
+    });
+
+    api.addEventListener("b_preview_with_metadata", function (event) {
+      const { blob, nodeId, displayNodeId } = event.detail;
+      const targetId = String(displayNodeId || nodeId);
+
+      const graph = app.graph;
+      if (!graph?._nodes) return;
+      const nodeRef = graph._nodes.find(
+        (n) => n.type === "GroupPreview" && String(n.id) === targetId
+      );
+      if (!nodeRef) return;
+
+      const tag = getTagFromNode(nodeRef);
+      if (!tag) return;
+
+      const img = new Image();
+      img.onload = () => {
+        if (!_galleryImages.has(tag)) _galleryImages.set(tag, []);
+        _galleryImages.get(tag).push({ img, sourceNodeId: nodeRef.id });
+        refreshDisplayNodes(tag);
+      };
+      img.src = URL.createObjectURL(blob);
     });
   },
 });
